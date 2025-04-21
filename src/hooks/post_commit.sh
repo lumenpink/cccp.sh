@@ -26,7 +26,7 @@ post_commit() {
         exit 0
     fi
     generate_changelog
-    generate_version_info >/dev/null
+    generate_version_info 2>&1 >/dev/null
     # Set the hook active flag to prevent infinite loops
     export HOOK_ACTIVE=1
     git add VERSION CHANGELOG.md

@@ -398,7 +398,7 @@ generate_version_info() {
     # Get the short hash of the second-to-last commit
     second_to_last_commit_hash=$(git log -n 2 --format=%h | tail -n 1)    
     echo "${last_tag}+${commit_count}.${current_date}.${second_to_last_commit_hash}" > VERSION
-    # echo "Version information written to VERSION file"
+    echo "Version information written to VERSION file"
 } 
 
 

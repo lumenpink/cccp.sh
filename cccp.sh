@@ -398,7 +398,7 @@ generate_version_info() {
     # Get the short hash of the second-to-last commit
     second_to_last_commit_hash=$(git log -n 2 --format=%h | tail -n 1)    
     echo "${last_tag}+${commit_count}.${current_date}.${second_to_last_commit_hash}" > VERSION
-    echo "Version information written to VERSION file"
+    # echo "Version information written to VERSION file"
 } 
 
 
@@ -532,11 +532,11 @@ post_commit() {
         exit 0
     fi
     generate_changelog
-    generate_version_info
+    generate_version_info 2>&1 >/dev/null
     # Set the hook active flag to prevent infinite loops
     export HOOK_ACTIVE=1
     git add VERSION CHANGELOG.md
-    git commit --amend --no-edit    
+    git commit --amend --no-edit    >/dev/null
     unset HOOK_ACTIVE
 }
 

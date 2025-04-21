@@ -2,34 +2,10 @@
 . "$SHELLSPEC_PROJECT_ROOT/spec/spec_helper.sh"
 
 Describe 'version'
-  Include "$SHELLSPEC_PROJECT_ROOT/src/utils/version.sh"
+  include_test_dependencies "$SHELLSPEC_PROJECT_ROOT/src/utils/version.sh"
 
-  setup() {
-    # Create a temporary directory for the test repository
-    TEST_DIR="$(mktemp -d)"
-    cd "$TEST_DIR"
-    
-    # Initialize git repository
-    git init
-    git config user.email "test@example.com"
-    git config user.name "Test User"
-    
-    # Create initial commit
-    touch README.md
-    git add README.md
-    git commit -m "initial commit"
-    
-    # Create a tag
-    git tag -a "v1.0.0" -m "Version 1.0.0"
-  }
-
-  cleanup() {
-    # Clean up the temporary directory
-    rm -rf "$TEST_DIR"
-  }
-
-  BeforeAll 'setup'
-  AfterAll 'cleanup'
+  BeforeAll 'setup_test_repository'
+  AfterAll 'cleanup_test_repository'
 
   Describe 'generate_version_info'
     BeforeEach 'rm -f VERSION'
@@ -70,6 +46,32 @@ Describe 'version'
       When call generate_version_info
       The output should be present
       The contents of file VERSION should include "$commit_hash"
+    End
+
+    It 'generates version info for untagged commit'
+      When call generate_version_info
+      The output should include "Version: 0.0.0"
+      The output should include "Commit:"
+    End
+
+    It 'generates version info for tagged commit'
+      git tag -a "v1.0.0" -m "Version 1.0.0"
+      When call generate_version_info
+      The output should include "Version: 1.0.0"
+      The output should include "Commit:"
+    End
+
+    It 'handles multiple tags'
+      git tag -a "v1.0.0" -m "Version 1.0.0"
+      git tag -a "v1.1.0" -m "Version 1.1.0"
+      When call generate_version_info
+      The output should include "Version: 1.1.0"
+    End
+
+    It 'handles pre-release tags'
+      git tag -a "v1.0.0-alpha" -m "Version 1.0.0-alpha"
+      When call generate_version_info
+      The output should include "Version: 1.0.0-alpha"
     End
   End
 End 

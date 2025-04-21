@@ -4,34 +4,10 @@
 . "$SHELLSPEC_PROJECT_ROOT/spec/spec_helper.sh"
 
 Describe 'changelog'
-  Include "$SHELLSPEC_PROJECT_ROOT/src/utils/changelog.sh"
+  include_test_dependencies "$SHELLSPEC_PROJECT_ROOT/src/utils/changelog.sh"
 
-  setup() {
-    # Create a temporary directory for the test repository
-    TEST_DIR="$(mktemp -d)"
-    cd "$TEST_DIR"
-    
-    # Initialize git repository
-    git init
-    git config user.email "test@example.com"
-    git config user.name "Test User"
-    
-    # Create initial commit
-    touch README.md
-    git add README.md
-    git commit -m "initial commit"
-    
-    # Create a tag
-    git tag -a "v1.0.0" -m "Version 1.0.0"
-  }
-
-  cleanup() {
-    # Clean up the temporary directory
-    rm -rf "$TEST_DIR"
-  }
-
-  BeforeAll 'setup'
-  AfterAll 'cleanup'
+  BeforeAll 'setup_test_repository'
+  AfterAll 'cleanup_test_repository'
 
   Describe 'generate_changelog'
     add_commit() {

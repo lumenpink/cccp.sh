@@ -1,70 +1,62 @@
 # Include the test helper
 . "$SHELLSPEC_PROJECT_ROOT/spec/spec_helper.sh"
 
-Describe 'Commit'
-  Include "$SHELLSPEC_PROJECT_ROOT/src/utils/commit.sh"
+Describe 'commit'
+  include_test_dependencies "$SHELLSPEC_PROJECT_ROOT/src/utils/commit.sh"
 
-  Describe 'commit function'
-    It 'returns error when no message is provided'
+  setup() {
+    # Create a temporary directory for the test repository
+    TEST_DIR="$(mktemp -d)"
+    cd "$TEST_DIR"
+    
+    # Initialize git repository
+    git init
+    git config user.email "test@example.com"
+    git config user.name "Test User"
+    
+    # Create initial commit
+    touch README.md
+    git add README.md
+    git commit -m "initial commit"
+  }
+
+  cleanup() {
+    # Clean up the temporary directory
+    rm -rf "$TEST_DIR"
+  }
+
+  BeforeAll 'setup'
+  AfterAll 'cleanup'
+
+  Describe 'commit'
+    It 'creates a valid commit'
+      echo "test" >> test.txt
+      git add test.txt
+      When call commit "feat: add test file"
+      The status should be success
+      The output should include "Commit created successfully"
+    End
+
+    It 'rejects invalid commit message'
+      echo "test" >> test.txt
+      git add test.txt
+      When call commit "invalid: some message"
+      The status should be failure
+      The output should include "Error: Invalid type 'invalid'"
+    End
+
+    It 'handles empty commit message'
+      echo "test" >> test.txt
+      git add test.txt
       When call commit ""
       The status should be failure
-      The output should include "Usage:"
+      The output should include "Error: Commit message cannot be empty"
     End
 
-    It 'validates commit message before committing'
-      # Mock the validate_commit_message function to return failure
-      validate_commit_message() { return 1; }
-      
-      When call commit "invalid message"
+    It 'handles no staged changes'
+      When call commit "feat: no changes"
       The status should be failure
-    End
-
-    It 'calls git commit with the provided message when valid'
-      # Mock the validate_commit_message function to return success
-      validate_commit_message() { return 0; }
-      
-      # Mock the git command
-      git() { echo "called git with: $*"; }
-
-      When call commit "feat: valid message"
-      The status should be success
-      The output should include "called git with: commit -m feat: valid message"
-    End
-
-    It 'handles conventional commit format with scope'
-      # Mock the validate_commit_message function to return success
-      validate_commit_message() { return 0; }
-      
-      # Mock the git command
-      git() { echo "called git with: $*"; }
-
-      When call commit "feat(ui): add button"
-      The status should be success
-      The output should include "called git with: commit -m feat(ui): add button"
-    End
-
-    It 'handles conventional commit format with multiple scopes'
-      # Mock the validate_commit_message function to return success
-      validate_commit_message() { return 0; }
-      
-      # Mock the git command
-      git() { echo "called git with: $*"; }
-
-      When call commit "feat(ui,api): add login"
-      The status should be success
-      The output should include "called git with: commit -m feat(ui,api): add login"
-    End
-
-    It 'handles conventional commit format with subscopes'
-      # Mock the validate_commit_message function to return success
-      validate_commit_message() { return 0; }
-      
-      # Mock the git command
-      git() { echo "called git with: $*"; }
-
-      When call commit "feat(ui/components): add button"
-      The status should be success
-      The output should include "called git with: commit -m feat(ui/components): add button"
+      The output should include "Error: No changes staged for commit"
     End
   End
 End

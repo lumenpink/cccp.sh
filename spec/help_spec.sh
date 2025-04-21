@@ -1,7 +1,10 @@
 #!/bin/sh
 
+# Include the test helper
+. "$SHELLSPEC_PROJECT_ROOT/spec/spec_helper.sh"
+
 Describe 'Help Function'
-  Include src/utils/help.sh
+  include_test_dependencies "$SHELLSPEC_PROJECT_ROOT/src/utils/help.sh"
 
   Describe 'show_help'
     It 'displays help information'

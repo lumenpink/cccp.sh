@@ -35,9 +35,26 @@
 
 ### Performance Improvements
 
-### [1.0.0]
+### [0.0.1]
 
 ### Features
+
+### Bug Fixes
+
+### Performance Improvements
+
+### [0.0.1]
+
+### Features
+  - testttqwe
+  - testttqwe
+  - testttqwe
+  - testttqwe
+  - testttqwe
+  - testttqwe
+  - testttqwe
+  - testttqwe
+  - add updatescript function
   - first version
 
 ### Bug Fixes

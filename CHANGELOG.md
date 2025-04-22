@@ -43,6 +43,14 @@
 
 ### Performance Improvements
 
+### [0.0.7]
+
+### Features
+
+### Bug Fixes
+
+### Performance Improvements
+
 ### [0.0.6]
 
 ### Features

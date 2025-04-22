@@ -10,6 +10,14 @@
 
 ## Previous Releases
 
+### [1.0.2]
+
+### Features
+
+### Bug Fixes
+
+### Performance Improvements
+
 ### [1.0.1]
 
 ### Features
